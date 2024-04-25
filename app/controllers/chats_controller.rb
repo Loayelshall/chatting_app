@@ -29,6 +29,7 @@ class ChatsController < ApplicationController
   # DELETE /chats/1
   def destroy
     @chat.destroy!
+    @application.decrement!(:chats_count)
   end
 
   private

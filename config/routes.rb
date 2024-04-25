@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :applications, param: :token do
     resources :chats, param: :number do
+      resources :messages, param: :number
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
