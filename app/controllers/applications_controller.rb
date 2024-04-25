@@ -17,7 +17,7 @@ class ApplicationsController < ApplicationController
   # POST /applications
   def create
     @application = Application.new(application_params)
-    @application.app_token = SecureRandom.hex(8)
+    @application.token = SecureRandom.hex(8)
     if @application.save
       render json: @application, status: :created
     else
@@ -25,7 +25,7 @@ class ApplicationsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /applications/:app_token
+  # PATCH/PUT /applications/:token
   def update
     if @application.update(application_params)
       render json: @application
@@ -34,7 +34,7 @@ class ApplicationsController < ApplicationController
     end
   end
 
-  # DELETE /applications/:app_token
+  # DELETE /applications/:token
   def destroy
     @application.destroy
   end
@@ -42,7 +42,7 @@ class ApplicationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_application
-      @application = Application.find_by("app_token": params[:app_token])
+      @application = Application.find_by("token": params[:token])
     end
 
     # Only allow a list of trusted parameters through.
