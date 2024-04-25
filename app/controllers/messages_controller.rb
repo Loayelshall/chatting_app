@@ -43,6 +43,11 @@ class MessagesController < ApplicationController
     @chat.save
   end
 
+  def search
+    @result = Message.search(params[:message])
+    render json: @result
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_application
