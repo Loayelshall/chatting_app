@@ -16,13 +16,13 @@ class ApplicationsController < ApplicationController
 
   # POST /applications
   def create
-    @application = Application.new(application_params)
-    @application.token = SecureRandom.hex(8)
-    if @application.save
-      render json: @application, status: :created
-    else
-      render json: @application.errors, status: :unprocessable_entity
-    end
+    token = SecureRandom.hex(8)
+    obj = [
+      token,
+      params[:name]
+    ]
+    CreateApplicationJob.perform_async(obj)
+    render json: token, status: :created
   end
 
   # PATCH/PUT /applications/:token
