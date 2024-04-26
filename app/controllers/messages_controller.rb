@@ -29,11 +29,20 @@ class MessagesController < ApplicationController
 
   # PATCH/PUT /messages/1
   def update
-    if @message.update(message: params[:message])
-      render json: @message
-    else
-      render json: @message.errors, status: :unprocessable_entity
-    end
+   # creating a hashmap and passing it
+    obj = [
+      params[:application_token],
+      params[:chat_number],
+      params[:number],
+      params[:message]
+    ]
+    UpdateMessageJob.perform_async(obj)
+    render "message queued"
+    # if @message.update(message: params[:message])
+    #   render json: @message
+    # else
+    #   render json: @message.errors, status: :unprocessable_entity
+    # end
   end
 
   # # DELETE /messages/1
