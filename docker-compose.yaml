@@ -75,7 +75,7 @@ services:
       - "elasticsearch"
   web:
     build: .
-    command: "./bin/rails server"
+    command: "./bin/rails server --binding 0.0.0.0"
     restart: always
     environment:
       DB_USERNAME: root
@@ -92,7 +92,7 @@ services:
       - ./:/workspace
       - bundle:/bundle
     ports:
-      - "3001:3001"
+      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy

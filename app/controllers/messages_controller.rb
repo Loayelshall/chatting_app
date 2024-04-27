@@ -70,9 +70,9 @@ class MessagesController < ApplicationController
     end
 
     def get_next_number
-      $redis_lock.lock("#{@application.token}_#{@chat.number}_next_message_number", 2000) do |locked|
-        output = $redis.get("#{@application.token}_#{@chat.number}_next_message_number")
-        $redis.set("#{@application.token}_#{@chat.number}_next_message_number", output.to_i + 1)
+      $redis_lock.lock("#{params[:application_token]}_#{params[:chat_number]}_next_message_number", 2000) do |locked|
+        output = $redis.get("#{params[:application_token]}_#{params[:chat_number]}_next_message_number")
+        $redis.set("#{params[:application_token]}_#{params[:chat_number]}_next_message_number", output.to_i + 1)
         return output
       end
     end
