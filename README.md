@@ -33,8 +33,10 @@ Orchestration: Docker compose -> v2.24.3
 
 
 ### Endpoints
+![image](https://github.com/Loayelshall/chatting_app/assets/11968453/9489c00f-bd06-4333-bf8c-32da393529e7)
 
 ### Models
+![image](https://github.com/Loayelshall/chatting_app/assets/11968453/59b980ad-cb16-4693-afb5-fdb7da1295aa)
 
 ### Data flow design
 #### I used two data storage solutions in this project: 
