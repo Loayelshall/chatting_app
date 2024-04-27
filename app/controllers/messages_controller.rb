@@ -43,10 +43,12 @@ class MessagesController < ApplicationController
 
   # # DELETE /messages/1
   def destroy
-    @message.destroy!
-    return $redis.lpop("#{@application.token}/#{@chat.number}/msg_numbers", @message.number)
-    @chat.decrement!(:message_count)
-    @chat.save
+    @message.with_lock do
+      @message.destroy!
+    end
+    @chat.with_lock do
+      @chat.decrement!(:message_count)
+    end
   end
 
   def search
@@ -69,10 +71,10 @@ class MessagesController < ApplicationController
     end
 
     def get_next_number
-      if $redis.lrange("#{@application.token}/#{@chat.number}/msg_numbers", -1, -1)
-        return @chat.message_count + 1
-      else
-        return $redis.lpop("#{@application.token}/#{@chat.number}/msg_numbers")
+      $redis_lock.lock("#{@application.token}_#{@chat.number}_next_message_number", 2000) do |locked|
+        output = $redis.get("#{@application.token}_#{@chat.number}_next_message_number")
+        $redis.set("#{@application.token}_#{@chat.number}_next_message_number", output.to_i + 1)
+        return output
       end
     end
 

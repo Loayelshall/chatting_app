@@ -55,3 +55,5 @@ gem "elasticsearch-rails", "~> 7.2"
 gem "searchkick", "~> 5.3"
 
 gem "redis", "~> 5.2"
+
+gem "redlock", "~> 2.0"

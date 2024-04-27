@@ -5,7 +5,6 @@ class ChatsController < ApplicationController
   # GET /chats
   def index
     @chats = @application.chats
-
     render json: @chats
   end
 
@@ -29,9 +28,12 @@ class ChatsController < ApplicationController
 
   # DELETE /chats/1
   def destroy
-    @chat.destroy!
-    $redis.lpush("#{@application.token}/chat_numbers", @chat.number)
-    @application.decrement!(:chats_count)
+    @chat.with_lock do
+      @chat.destroy!
+    end
+    @application.with_lock do
+      @application.decrement!(:chats_count)
+    end
   end
 
   private
@@ -45,10 +47,10 @@ class ChatsController < ApplicationController
     end
 
     def get_next_number
-      if $redis.lrange("#{@application.token}/chat_numbers", -1, -1)
-        return @application.chats_count + 1
-      else
-        return $redis.lpop("#{@application.token}/chat_numbers")
+      $redis_lock.lock("#{@application.token}_next_chat_number", 2000) do |locked|
+        output = $redis.get("#{@application.token}_next_chat_number")
+        $redis.set("#{@application.token}_next_chat_number", output.to_i + 1)
+        return output
       end
     end
 
