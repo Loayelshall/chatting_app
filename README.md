@@ -14,6 +14,9 @@ Table of contents:
 
 ### Demo
 
+https://github.com/Loayelshall/chatting_app/assets/11968453/98dac26c-41a9-495e-889c-50c943071f37
+
+
 ### Dependencies
 1. Docker
 2. Docker Compose
