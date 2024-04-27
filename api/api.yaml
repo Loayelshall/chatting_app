@@ -1,0 +1,344 @@
+    openapi: 3.0.0
+    info:
+      title: Chatting App
+      version: 0.0.1
+    tags:
+     - name : "Applications"
+     - name : "Chats"
+     - name : "Messages"
+    paths:
+      /applications:
+        get:
+            tags:
+            - "Applications"
+            summary: Get all applications.
+            responses:
+              '200':    # status code
+                description: A JSON array of applications
+                content:
+                  application/json:
+                    schema:
+                      type: array
+                      items:
+                        properties:
+                          token:
+                            type: string
+                            example: d0ee98124fb397201714219637
+                          name:
+                            type: string
+                            example: Application 1
+                          chats_count:
+                            type: integer
+                            example: 0
+                          created_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+                          updated_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+        post:
+          tags:
+          - "Applications"
+          summary: Create a new application.
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+          responses:
+            '200':    # status code
+              description: application token
+              content:
+                  application/string:
+                    schema:
+                      type: string
+                      example: d0ee98124fb397201714219637
+      /applications/:app_token:
+        get:
+          tags:
+            - "Applications"
+          summary: Finds an application name using its token.
+          responses:
+            '200':    # status code
+              description: application object
+              content:
+                application/json:
+                    schema:
+                      type: object
+                      properties:
+                        token:
+                          type: string
+                          example: d0ee98124fb397201714219637
+                        name:
+                          type: string
+                          example: Application 1
+                        chats_count:
+                          type: integer
+                          example: 0
+                        created_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+                        updated_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+
+        put:
+          tags:
+            - "Applications"
+          summary: Updates an application name using its token.
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Application 2
+          responses:
+              '200':    # status code
+                description: A JSON array of user names
+                content:
+                  application/json:
+                    schema:  
+                        type: string
+                        example: "application updated successfully"
+        delete:
+          tags:
+            - "Applications"
+          summary: Deletes an application name using its token.
+          responses:
+            '200':    # status code
+              description: A JSON array of user names
+              content:
+                application/json:
+                  schema:  
+                      type: string
+                      example: "application deleted successfully"
+      /applications/:app_token/chats:
+        get:
+          tags:
+            - "Chats"
+          summary: Get all chats in an application using its token.
+          responses:
+            '200':    # status code
+              description: application object
+              content:
+                application/json:
+                    schema:
+                      type: array
+                      items:
+                        properties:
+                          number:
+                            type: integer
+                            example: 1
+                          message_count:
+                            type: integer
+                            example: 0
+                          created_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+                          updated_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+        post:
+          tags:
+            - "Chats"
+          summary: Add a chat in an application using its token.
+          responses:
+            '200':    # status code
+              description: chat number
+              content:
+                application/integer:
+                  schema: 
+                    example: 1
+      /applications/:app_token/chats/:chat_number:
+        get:
+          tags:
+            - "Chats"
+          summary: Get a chat in an application using application token and chat number.
+          responses:
+            '200':    # status code
+              description: application object
+              content:
+                application/json:
+                    schema:
+                      type: object
+                      properties:
+                        number:
+                          type: integer
+                          example: 1
+                        message_count:
+                          type: integer
+                          example: 0
+                        created_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+                        updated_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+        delete:
+          tags:
+            - "Chats"
+          summary: Delete a chat in an application using application token and chat number.
+          responses:
+            '200':    # status code
+              description: confirmation message
+              content:
+                application/string:
+                  schema: 
+                      example: "chat deleted successfully"
+      /applications/:app_token/chats/:chat_number/messages:
+        get:
+          tags:
+            - "Messages"
+          summary: Get all messages in a chat using application token and chat number.
+          responses:
+            '200':    # status code
+              description: messages array
+              content:
+                application/json:
+                    schema:
+                      type: array
+                      items:
+                        properties:
+                          number:
+                            type: integer
+                            example: 1
+                          message:
+                            type: string
+                            example: "message"
+                          created_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+                          updated_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+        post:
+          tags:
+            - "Messages"
+          summary: Get all messages in a chat using application token and chat number.
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: message
+          responses:
+            '200':    # status code
+              description: message object
+              content:
+                application/json:
+                    schema:
+                      type: object
+                      properties:
+                        number:
+                          type: integer
+                          example: 1
+                        message:
+                          type: string
+                          example: "message"
+                        created_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+                        updated_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+      /applications/:app_token/chats/:chat_number/messages/:msg_number:
+        get:
+          tags:
+            - "Messages"
+          summary: Get a messages in a chat using application token, chat number, and message number.
+          responses:
+            '200':    # status code
+              description: message object
+              content:
+                application/json:
+                    schema:
+                      type: object
+                      properties:
+                        number:
+                          type: integer
+                          example: 1
+                        message:
+                          type: string
+                          example: "message"
+                        created_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+                        updated_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+        put:
+          tags:
+            - "Messages"
+          summary: Update a messages in a chat using application token, chat number, and message number.
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: message
+          responses:
+            '200':    # status code
+              description: confirmation
+              content:
+                application/string:
+                    schema:
+                      example: "message updated"
+                      
+        delete:
+          tags:
+            - "Messages"
+          summary: delete a messages in a chat using application token, chat number, and message number.
+          responses:
+            '200':    # status code
+              description: confirmation
+              content:
+                application/string:
+                    schema:
+                      example: "message deleted successfully"
+      /applications/:app_token/chats/:chat_number/messages/search:
+        post:
+          tags:
+            - "Messages"
+          summary: Search for a message using its content.
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: message
+          responses:
+            '200':    # status code
+              description: messages array
+              content:
+                application/json:
+                    schema:
+                      type: array
+                      items:
+                        properties:
+                          number:
+                            type: integer
+                            example: 1
+                          message:
+                            type: string
+                            example: "message"
+                          created_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
+                          updated_at:
+                            type: string
+                            example: 2022-01-01T00:00:00.000000000Z
