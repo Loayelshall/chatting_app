@@ -16,7 +16,8 @@ class ApplicationsController < ApplicationController
 
   # POST /applications
   def create
-    token = SecureRandom.hex(8)
+    timestamp = Time.now.to_i
+    token = SecureRandom.hex(8) + timestamp.to_s
     obj = [
       token,
       params[:name]

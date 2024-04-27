@@ -17,7 +17,8 @@ class MessagesController < ApplicationController
 
   # POST /messages
   def create
-    @message = @chat.messages.new(number: @chat.message_count + 1, message: params[:message])
+    message_number = get_next_number
+    @message = @chat.messages.new(number: message_number, message: params[:message])
     @chat.increment!(:message_count)
 
     if @message.save and @chat.save
@@ -38,16 +39,12 @@ class MessagesController < ApplicationController
     ]
     UpdateMessageJob.perform_async(obj)
     render "message queued"
-    # if @message.update(message: params[:message])
-    #   render json: @message
-    # else
-    #   render json: @message.errors, status: :unprocessable_entity
-    # end
   end
 
   # # DELETE /messages/1
   def destroy
     @message.destroy!
+    return $redis.lpop("#{@application.token}/#{@chat.number}/msg_numbers", @message.number)
     @chat.decrement!(:message_count)
     @chat.save
   end
@@ -69,6 +66,14 @@ class MessagesController < ApplicationController
 
     def set_message
       @message = @chat.messages.find_by("number": params[:number]) if @chat
+    end
+
+    def get_next_number
+      if $redis.lrange("#{@application.token}/#{@chat.number}/msg_numbers", -1, -1)
+        return @chat.message_count + 1
+      else
+        return $redis.lpop("#{@application.token}/#{@chat.number}/msg_numbers")
+      end
     end
 
     # Only allow a list of trusted parameters through.
