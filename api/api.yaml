@@ -100,7 +100,7 @@
                       example: Application 2
           responses:
               '200':    # status code
-                description: A JSON array of user names
+                description: search output
                 content:
                   application/json:
                     schema:  
@@ -112,7 +112,7 @@
           summary: Deletes an application name using its token.
           responses:
             '200':    # status code
-              description: A JSON array of user names
+              description: search output
               content:
                 application/json:
                   schema:  
@@ -244,12 +244,6 @@
                         message:
                           type: string
                           example: "message"
-                        created_at:
-                          type: string
-                          example: 2022-01-01T00:00:00.000000000Z
-                        updated_at:
-                          type: string
-                          example: 2022-01-01T00:00:00.000000000Z
       /applications/:app_token/chats/:chat_number/messages/:msg_number:
         get:
           tags:
@@ -323,22 +317,22 @@
                       example: message
           responses:
             '200':    # status code
-              description: messages array
+              description: search output
               content:
                 application/json:
-                    schema:
-                      type: array
-                      items:
-                        properties:
-                          number:
-                            type: integer
-                            example: 1
-                          message:
-                            type: string
-                            example: "message"
-                          created_at:
-                            type: string
-                            example: 2022-01-01T00:00:00.000000000Z
-                          updated_at:
-                            type: string
-                            example: 2022-01-01T00:00:00.000000000Z
+                  schema: 
+                    type: array
+                    items: 
+                      properties:
+                        number:
+                          type: integer
+                          example: 1
+                        message:
+                          type: string
+                          example: "message"
+                        created_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z
+                        updated_at:
+                          type: string
+                          example: 2022-01-01T00:00:00.000000000Z

@@ -1,5 +1,5 @@
 class ChatsController < ApplicationController
-  before_action :set_application
+  before_action :set_application, only: %i[ index show destroy ]
   before_action :set_chat, only: %i[ show destroy ]
 
   # GET /chats
@@ -16,14 +16,13 @@ class ChatsController < ApplicationController
   # POST /chats
   def create
     chat_number = get_next_number
-    @chat = @application.chats.new(number: chat_number)
-    @application.increment!(:chats_count)
     $redis.set("#{@application.token}_#{@chat.number}_next_message_number", 1)
-    if @chat.save and @application.save
-      render json: @chat.number, status: :created
-    else
-      render json: @chat.errors, status: :unprocessable_entity
-    end
+    obj = [
+      params[:application_token],
+      chat_number
+    ]
+    CreateChatJob.perform_async(obj)
+    render json: {number: chat_number, message_count: 0}, status: :created
   end
 
   # DELETE /chats/1

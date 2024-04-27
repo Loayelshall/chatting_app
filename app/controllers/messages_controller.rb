@@ -1,12 +1,10 @@
 class MessagesController < ApplicationController
-  before_action :set_application, :set_chat
-  # before_action :set_chat
+  before_action :set_application, :set_chat, only [index, show, destroy, search]
   before_action :set_message, only: %i[ show update destroy ]
 
   # GET /messages
   def index
     @messages = @chat.messages
-
     render json: @messages, :except=> [:id, :chat_id], status: :ok
   end
 
@@ -18,16 +16,14 @@ class MessagesController < ApplicationController
   # POST /messages
   def create
     message_number = get_next_number
-    @message = @chat.messages.new(number: message_number, message: params[:message])
-    @chat.with_lock do
-      @chat.increment!(:message_count)
-    end
-
-    if @message.save and @chat.save
-      render json: @message, :except=> [:id, :chat_id], status: :created
-    else
-      render json: @message.errors, status: :unprocessable_entity
-    end
+    obj = [
+      params[:application_token],
+      params[:chat_number],
+      message_number,
+      params[:message]
+    ]
+    CreateMessageJob.perform_async(obj)
+    render json: {number: message_number, message: params[:message]}, :except=> [:id, :chat_id], status: :created
   end
 
   # PATCH/PUT /messages/1
