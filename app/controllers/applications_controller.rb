@@ -5,13 +5,12 @@ class ApplicationsController < ApplicationController
   # GET /applications
   def index
     @applications = Application.all
-
-    render json: @applications
+    render json: @applications, :except=> [:id]
   end
 
   # GET /applications/1
   def show
-    render json: @application
+    render json: @application, :except=> [:id]
   end
 
   # POST /applications
@@ -33,11 +32,13 @@ class ApplicationsController < ApplicationController
       params[:name]
     ]
     UpdateApplicationJob.perform_async(obj)
+    render "application updated successfully", status: :ok
   end
 
   # DELETE /applications/:token
   def destroy
     @application.destroy
+    render "application deleted successfully", status: :ok
   end
 
   private

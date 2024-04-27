@@ -7,22 +7,24 @@ class MessagesController < ApplicationController
   def index
     @messages = @chat.messages
 
-    render json: @messages
+    render json: @messages, :except=> [:id, :chat_id], status: :ok
   end
 
   # GET /messages/1
   def show
-    render json: @message
+    render json: @message, :except=> [:id, :chat_id], status: :ok
   end
 
   # POST /messages
   def create
     message_number = get_next_number
     @message = @chat.messages.new(number: message_number, message: params[:message])
-    @chat.increment!(:message_count)
+    @chat.with_lock do
+      @chat.increment!(:message_count)
+    end
 
     if @message.save and @chat.save
-      render json: @message, status: :created
+      render json: @message, :except=> [:id, :chat_id], status: :created
     else
       render json: @message.errors, status: :unprocessable_entity
     end
@@ -38,7 +40,7 @@ class MessagesController < ApplicationController
       params[:message]
     ]
     UpdateMessageJob.perform_async(obj)
-    render "message queued"
+    render "message updated"
   end
 
   # # DELETE /messages/1
@@ -49,11 +51,12 @@ class MessagesController < ApplicationController
     @chat.with_lock do
       @chat.decrement!(:message_count)
     end
+    render "message deleted successfully", status: :ok
   end
 
   def search
     @result = Message.search(params[:message])
-    render json: @result
+    render json: @result, :except=> [:id, :chat_id], status: :ok
   end
 
   private

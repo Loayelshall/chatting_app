@@ -5,12 +5,12 @@ class ChatsController < ApplicationController
   # GET /chats
   def index
     @chats = @application.chats
-    render json: @chats
+    render json: @chats,  :except=> [:id, :application_id]
   end
 
   # GET /chats/1
   def show
-    render json: @chat
+    render json: @chat, :except=> [:id, :application_id]
   end
 
   # POST /chats
@@ -18,7 +18,7 @@ class ChatsController < ApplicationController
     chat_number = get_next_number
     @chat = @application.chats.new(number: chat_number)
     @application.increment!(:chats_count)
-
+    $redis.set("#{@application.token}_#{@chat.number}_next_message_number", 1)
     if @chat.save and @application.save
       render json: @chat.number, status: :created
     else
@@ -34,6 +34,7 @@ class ChatsController < ApplicationController
     @application.with_lock do
       @application.decrement!(:chats_count)
     end
+    render "chat deleted successfully", status: :ok
   end
 
   private
